@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class ConfigFileReader {
 
-    public static String appConfigurationReader(String propertyName) {
+    public static Properties appConfigurationReader() {
         Properties prop = new Properties();
         try (FileInputStream fis = new FileInputStream("src\\test\\resources\\configuration.properties")) {
             prop.load(fis);
@@ -17,7 +17,7 @@ public class ConfigFileReader {
         } catch (IOException ignored) {
             System.out.println(ignored.getMessage());
         }
-        return prop.getProperty(propertyName);
+        return prop;
     }
 
 }
