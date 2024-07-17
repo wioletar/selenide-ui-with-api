@@ -1,10 +1,10 @@
 import com.codeborne.selenide.Condition;
 import factory.UserFactory;
+import model.User;
 import org.junit.Test;
 import pages.AccountConfirmationPage;
 import pages.HomePage;
 import pages.RegisterPage;
-import pages.SignupLoginPage;
 
 /**
  * Test Case 1: Register User
@@ -31,40 +31,23 @@ import pages.SignupLoginPage;
 public class RegisterUserTest extends BaseTest {
 
     HomePage homePage = new HomePage();
-    SignupLoginPage signupLoginPage = new SignupLoginPage();
     RegisterPage registerPage = new RegisterPage();
     UserFactory userFactory = new UserFactory();
     AccountConfirmationPage accountConfirmationPage = new AccountConfirmationPage();
 
     @Test
     public void userCanRegister() {
+        User user = userFactory.userWithAllCorrectData;
         homePage.signupLoginButton.click();
-        signupLoginPage.newUserSignupHeaderText.shouldHave(Condition.exactText("New User Signup!"));
-        signupLoginPage.inputSignupName(userFactory.userWithAllData);
-        signupLoginPage.inputSignupEmail(userFactory.userWithAllData);
-        signupLoginPage.signupButton.click();
-        registerPage.clickRandomTitle()
-                .inputPassword(userFactory.userWithAllData)
-                .clickRandomYear()
-                .clickRandomMonth()
-                .clickRandomDay()
-                .clickNewsletterCheckbox()
-                .clickOffersCheckbox()
-                .inputFirstName(userFactory.userWithAllData)
-                .inputLastName(userFactory.userWithAllData)
-                .inputCompany(userFactory.userWithAllData)
-                .inputAddress(userFactory.userWithAllData)
-                .inputAddress2(userFactory.userWithAllData)
-                .clickRandomCountry()
-                .inputState(userFactory.userWithAllData)
-                .inputCity(userFactory.userWithAllData)
-                .inputZipcode(userFactory.userWithAllData)
-                .inputMobileNumber(userFactory.userWithAllData)
-                .clickCreateAccountButton();
-        accountConfirmationPage.accountCreatedText.shouldHave(Condition.exactText("Account Created!"));
-        accountConfirmationPage.clickContinueButton();
-        homePage.loggedInButton.shouldHave(Condition.partialText(userFactory.userWithAllData.getName()));
-        homePage.clickDeleteAccountButton();
-        accountConfirmationPage.accounDeletedText.shouldHave(Condition.exactText("Account Deleted!"));
+        signupLoginPage.newUserSignupHeaderText.shouldHave(Condition.exactText("New User Signup!")
+                .because("Sign up page should be loaded"));
+        registerPage.fillFormCorrectly(user);
+        accountConfirmationPage.accountCreatedText.shouldHave(Condition.exactText("Account Created!")
+                .because("Created account page should be loaded"));
+        accountConfirmationPage.clickContinue();
+        homePage.loggedInButton.shouldHave(Condition.partialText(user.getName()));
+        homePage.deleteAccount();
+        accountConfirmationPage.accounDeletedText.shouldHave(Condition.exactText("Account Deleted!")
+                .because("Delete account page should be loaded"));
     }
 }
