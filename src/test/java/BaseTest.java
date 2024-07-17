@@ -5,23 +5,29 @@ import configuration.ConfigFileReader;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import pages.HomePage;
+import pages.SignupLoginPage;
+
+import java.util.Properties;
 
 import static com.codeborne.selenide.Selenide.open;
 import static configuration.BrowserConfiguration.getCapabilities;
 
 public class BaseTest {
 
+    SignupLoginPage signupLoginPage = new SignupLoginPage();
     HomePage homePage = new HomePage();
+    public static Properties properties = ConfigFileReader.appConfigurationReader();
 
-    @Before
-    public void before() {
+    @BeforeClass
+    public static void beforeClass() {
         setUpAllureReports();
-        getCapabilities(ConfigFileReader.appConfigurationReader("browser"));
-        String appAddress = ConfigFileReader.appConfigurationReader("applicationAddress");
+        getCapabilities(properties.getProperty("browser"));
+        String appAddress = properties.getProperty("applicationAddress");
         open(appAddress);
         Assert.assertEquals(WebDriverRunner.url(), appAddress);
+        HomePage homePage = new HomePage();
         homePage.consentButton.click();
     }
 
